@@ -1,0 +1,41 @@
+version: '2'
+services:
+  odoo-db:
+    image: postgres:9.4
+    restart: always
+    environment:
+      - "POSTGRES_PASSWORD=password"
+      - "POSTGRES_USER=odoo"
+      - "PGDATA=/var/lib/postgresql/data/pgdata"
+    volumes:
+      - /srv/odoo/db:/var/lib/postgresql/data/pgdata
+    networks:
+      - proxy-tier
+  odoo:
+    build: 10.0/
+    image: efero/odoo
+    restart: always
+    depends_on:
+      - gfc-odoo-db
+    expose:
+      - "8069"
+    environment:
+      - "VIRTUAL_HOST=odoo.domain.tld"
+      - "VIRTUAL_PORT=8069"
+      - "LETSENCRYPT_HOST=odoo.domain.tld"
+      - "LETSENCRYPT_EMAIL=info@domain.tld"
+      - "HOST=odoo-db"
+      - "USER=odoo"
+      - "PASSWORD=password"
+    volumes:
+      - /srv/odoo/odoo:/etc/odoo
+      - /srv/odoo/addons:/mnt/extra-addons
+      - odoo-web-data:/var/lib/odoo
+    networks:
+      - proxy-tier
+networks:
+  proxy-tier:
+    external:
+      name: reverse-proxy
+volumes:
+  odoo-web-data:
