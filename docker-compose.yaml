@@ -1,7 +1,7 @@
 version: '2'
 services:
   odoo-db:
-    image: postgres:9.4
+    image: postgres:10-alpine
     restart: always
     environment:
       - "POSTGRES_PASSWORD=password"
@@ -12,11 +12,11 @@ services:
     networks:
       - proxy-tier
   odoo:
-    build: 10.0/
+    build: 11.0/
     image: efero/odoo
     restart: always
     depends_on:
-      - gfc-odoo-db
+      - odoo-db
     expose:
       - "8069"
     environment:
