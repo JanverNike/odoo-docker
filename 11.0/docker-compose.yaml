@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  odoo-db:
+    image:
+    environment:
+    volumes:
+    
+  odoo:
+    build: .
+    ports:
+      - "8071:8070"
+    environment:
+    volumes:
